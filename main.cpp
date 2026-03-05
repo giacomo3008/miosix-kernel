@@ -61,6 +61,9 @@ static void calibrationFrom2Points(double raw1, double pix1,
 
 ENTRY()
 {
+    // resetto la calibrazione
+    SetTouchscreenCalibration(0.0, 0.0, 0.0, 0.0);
+
     Display &display = DisplayManager::instance().getDisplay();
     InputHandler &backend = InputHandler::instance();
 
@@ -68,7 +71,6 @@ ENTRY()
     const short h = display.getHeight() - 1;
 
     short oldX = 0, oldY = 0;
-    short oldRawX = 0, oldRawY = 0;
 
     // punti noti delle croci
     Point targets[] = {
@@ -170,8 +172,6 @@ ENTRY()
                             dc.line(Point(oldX, 0), Point(oldX, h), black);
                             oldX = e2.getPoint().x();
                             oldY = e2.getPoint().y();
-                            oldRawX = e2.getRaw().x();
-                            oldRawY = e2.getRaw().y();
 
                             dc.line(Point(0, oldY), Point(w, oldY), white);
                             dc.line(Point(oldX, 0), Point(oldX, h), white);

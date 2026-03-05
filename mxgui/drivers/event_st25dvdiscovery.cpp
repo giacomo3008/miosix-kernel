@@ -55,10 +55,10 @@ void EXTI9_5_HandlerImpl()
 
 namespace mxgui
 {
-    static int g_xMin = 0;
-    static int g_xMax = 4096;
-    static int g_yMin = 0;
-    static int g_yMax = 4096;
+    static int g_xMin;
+    static int g_xMax;
+    static int g_yMin;
+    static int g_yMax;
 
     void SetTouchscreenCalibration(double xMin, double xMax, double yMin, double yMax)
     {
