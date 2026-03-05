@@ -36,6 +36,7 @@
 #include "event_st25dvdiscovery.h"
 #include "miosix.h"
 #include "util/software_i2c.h"
+#include "../display.h"
 #include <algorithm>
 
 using namespace std;
@@ -54,6 +55,32 @@ void EXTI9_5_HandlerImpl()
 
 namespace mxgui
 {
+    static int g_xMin = 0;
+    static int g_xMax = 4096;
+    static int g_yMin = 0;
+    static int g_yMax = 4096;
+
+    void SetTouchscreenCalibration(double xMin, double xMax, double yMin, double yMax)
+    {
+        if (xMin == 0.0 && xMax == 0.0 && yMin == 0.0 && yMax == 0.0)
+        {
+            g_xMin = 0;
+            g_xMax = 4096;
+            g_yMin = 0;
+            g_yMax = 4096;
+            return;
+        }
+
+        g_xMin = (int)xMin;
+        g_xMax = (int)xMax;
+        g_yMin = (int)yMin;
+        g_yMax = (int)yMax;
+
+        printf("g1: %d\n", g_xMin);
+        printf("g2: %d\n", g_xMax);
+        printf("g3: %d\n", g_yMin);
+        printf("g4: %d\n", g_yMax);
+    }
 
     typedef Gpio<GPIOC_BASE, 14> buttonKey;
     typedef Gpio<GPIOE_BASE, 8> joySel;
@@ -224,13 +251,14 @@ namespace mxgui
                 y = 4095 - y; // Y is swapped
                 rawData = Point(x, y);
 
-                // Apply calibration. Values may vary from unit to unit
-                const int xMin = 240;
-                const int xMax = 3800;
-                const int yMin = 220;
-                const int yMax = 3700;
-                x = (x - xMin) * 240 / (xMax - xMin);
-                y = (y - yMin) * 320 / (yMax - yMin);
+                Display &display = DisplayManager::instance().getDisplay();
+
+                int width = display.getWidth();
+                int height = display.getHeight();
+
+                x = (x - g_xMin) * width / (g_xMax - g_xMin);
+                y = (y - g_yMin) * height / (g_yMax - g_yMin);
+
                 x = min(239, max(0, x));
                 y = min(319, max(0, y));
 

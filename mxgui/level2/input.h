@@ -218,6 +218,7 @@ namespace mxgui
         InputHandlerImpl *pImpl; // Implementation detal
     };
 
+    void SetTouchscreenCalibration(double xMin, double xMax, double yMin, double yMax);
 } // namespace mxgui
 
 #endif // MXGUI_LEVEL_2
