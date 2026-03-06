@@ -206,6 +206,8 @@ namespace mxgui
          */
         std::function<void()> registerEventCallback(std::function<void()> cb);
 
+        void setTouchscreenCalibration(double xMin, double xMax, double yMin, double yMax);
+
     private:
         /**
          * Class cannot be copied
@@ -217,8 +219,6 @@ namespace mxgui
 
         InputHandlerImpl *pImpl; // Implementation detal
     };
-
-    void SetTouchscreenCalibration(double xMin, double xMax, double yMin, double yMax);
 } // namespace mxgui
 
 #endif // MXGUI_LEVEL_2

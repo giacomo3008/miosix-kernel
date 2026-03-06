@@ -61,11 +61,11 @@ static void calibrationFrom2Points(double raw1, double pix1,
 
 ENTRY()
 {
-    // resetto la calibrazione
-    SetTouchscreenCalibration(0.0, 0.0, 0.0, 0.0);
-
     Display &display = DisplayManager::instance().getDisplay();
     InputHandler &backend = InputHandler::instance();
+
+    // resetto la calibrazione
+    backend.setTouchscreenCalibration(0.0, 0.0, 0.0, 0.0);
 
     const short w = display.getWidth() - 1;
     const short h = display.getHeight() - 1;
@@ -155,7 +155,7 @@ ENTRY()
                     printf("xMax: %f\n", cx1.max);
                     printf("yMin: %f\n", cy1.min);
                     printf("yMax: %f\n", cy1.max);
-                    SetTouchscreenCalibration(cx1.min, cx1.max, cy1.min, cy1.max);
+                    backend.setTouchscreenCalibration(cx1.min, cx1.max, cy1.min, cy1.max);
                     for (;;)
                     {
                         Event e2 = backend.getEvent();
