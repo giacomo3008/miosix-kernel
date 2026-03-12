@@ -184,10 +184,6 @@ namespace mxgui
             writeReg(FIFO_TH, 0x01);
         }
 
-        Point getRawData()
-        {
-            return rawData;
-        }
         /**
          * \return the touch point or (-1,-1) if no touch is in progress
          */
@@ -226,13 +222,15 @@ namespace mxgui
                 int y = ((static_cast<int>(tsData[1]) & 0xf) << 8) | tsData[2];
 
                 y = 4095 - y; // Y is swapped
-                rawData = Point(x, y);
 
-                x = (x - g_xMin) * 240 / (g_xMax - g_xMin);
-                y = (y - g_yMin) * 320 / (g_yMax - g_yMin);
+                if (g_xMax != g_xMin && g_yMax != g_yMin)
+                {
+                    x = (x - g_xMin) * 240 / (g_xMax - g_xMin);
+                    y = (y - g_yMin) * 320 / (g_yMax - g_yMin);
 
-                x = min(239, max(0, x));
-                y = min(319, max(0, y));
+                    x = min(239, max(0, x));
+                    y = min(319, max(0, y));
+                }
 
 #if defined(MXGUI_ORIENTATION_VERTICAL)
                 lastTouchPoint = Point(x, y);
@@ -357,7 +355,6 @@ namespace mxgui
 
             // Check touchscreen
             Point p = touchCtrl.getTouchData();
-            Point rawP = touchCtrl.getRawData();
             if (p.x() >= 0) // Is someone touching the screen?
             {
                 // Ok, someone is touching the screen
@@ -366,9 +363,9 @@ namespace mxgui
                 {
                     pOld = p;
                     if (tPrev == false)
-                        callback(Event(EventType::TouchDown, pOld, rawP, EventDirection::DOWN));
+                        callback(Event(EventType::TouchDown, pOld, EventDirection::DOWN));
                     else
-                        callback(Event(EventType::TouchMove, pOld, rawP, EventDirection::DOWN));
+                        callback(Event(EventType::TouchMove, pOld, EventDirection::DOWN));
                 }
                 tPrev = true;
             }
@@ -378,7 +375,7 @@ namespace mxgui
                 if (tPrev == true)
                 {
                     touchCtrl.touchFifoClear();
-                    callback(Event(EventType::TouchUp, pOld, rawP, EventDirection::UP));
+                    callback(Event(EventType::TouchUp, pOld, EventDirection::UP));
                 }
                 tPrev = false;
             }
@@ -425,25 +422,12 @@ namespace mxgui
 
     void InputHandlerImpl::setTouchscreenCalibration(double xMin, double xMax, double yMin, double yMax)
     {
-        if (xMin == 0.0 && xMax == 0.0 && yMin == 0.0 && yMax == 0.0)
-        {
-            g_xMin = 0;
-            g_xMax = 4096;
-            g_yMin = 0;
-            g_yMax = 4096;
-            return;
-        }
-
         g_xMin = (int)xMin;
         g_xMax = (int)xMax;
         g_yMin = (int)yMin;
         g_yMax = (int)yMax;
-
-        printf("g1: %d\n", g_xMin);
-        printf("g2: %d\n", g_xMax);
-        printf("g3: %d\n", g_yMin);
-        printf("g4: %d\n", g_yMax);
     }
+
     Event InputHandlerImpl::getEvent()
     {
         Event result;

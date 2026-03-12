@@ -34,6 +34,7 @@
 
 using namespace mxgui;
 
+// function to draw the crosses
 static void drawCross(DrawingContext &dc, Point c, int r)
 {
     dc.line(Point(c.x() - r, c.y()), Point(c.x() + r, c.y()), white);
@@ -45,7 +46,7 @@ struct Calib
     double min, max;
 };
 
-// la trasformazione da raw a pixel avviene tramite una trasformazione lineare del tipo:
+// The transformation from RAW to pixels is performed through a linear transformation of the form:
 //    pixel = a * raw + b
 static void calibrationFrom2Points(double raw1, double pix1,
                                    double raw2, double pix2,
@@ -64,7 +65,7 @@ ENTRY()
     Display &display = DisplayManager::instance().getDisplay();
     InputHandler &backend = InputHandler::instance();
 
-    // resetto la calibrazione
+    // calibration reset
     backend.setTouchscreenCalibration(0.0, 0.0, 0.0, 0.0);
 
     const short w = display.getWidth() - 1;
@@ -72,7 +73,7 @@ ENTRY()
 
     short oldX = 0, oldY = 0;
 
-    // punti noti delle croci
+    // cross points array
     Point targets[] = {
         Point(30, 30),
         Point(w - 30, 30),
@@ -108,12 +109,9 @@ ENTRY()
         {
             if (e.getEvent() == EventType::TouchDown)
             {
-                rawDatas[idx] = e.getRaw();
+                rawDatas[idx] = e.getPoint();
 
-                // log dei dati rilevati
-                printf("raw[%d]=(%d,%d)\n", idx, rawDatas[idx].x(), rawDatas[idx].y());
-
-                // aspetto il touchUp prima di mostrare la croce sucesiva
+                // I wait for the touch-up before showing the next cross.
                 state = WAIT_UP;
             }
         }
@@ -127,7 +125,7 @@ ENTRY()
                 {
                     dc.clear(black);
 
-                    // calcolo la calibrazione
+                    // compute the calibration parameters
                     Calib cx1, cy1, cx2, cy2;
 
                     calibrationFrom2Points((double)rawDatas[0].x(), (double)targets[0].x(),
@@ -151,10 +149,6 @@ ENTRY()
                     cy1.max = (cy1.max + cy2.max) / 2;
                     cy1.min = (cy1.min + cy2.min) / 2;
 
-                    printf("xMin: %f\n", cx1.min);
-                    printf("xMax: %f\n", cx1.max);
-                    printf("yMin: %f\n", cy1.min);
-                    printf("yMax: %f\n", cy1.max);
                     backend.setTouchscreenCalibration(cx1.min, cx1.max, cy1.min, cy1.max);
                     for (;;)
                     {

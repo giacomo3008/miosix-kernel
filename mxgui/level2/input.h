@@ -78,42 +78,42 @@ namespace mxgui
         /**
          * Default constructor
          */
-        Event() : e(EventType::Default), k(0), d(false), p(-1, -1), raw(-1, -1) {}
+        Event() : e(EventType::Default), k(0), d(false), p(-1, -1) {}
 
         /**
          * Constructor for events without a position information
          * \param e event type
          */
-        explicit Event(EventType::E e) : e(e), k(0), d(false), p(-1, -1), raw(-1, -1) {}
+        explicit Event(EventType::E e) : e(e), k(0), d(false), p(-1, -1) {}
 
         /**
          * Constructor for events without a position information
          * \param e event type
          */
         explicit Event(EventType::E e, EventDirection::D d)
-            : e(e), k(0), d(d == EventDirection::UP), p(-1, -1), raw(-1, -1) {}
+            : e(e), k(0), d(d == EventDirection::UP), p(-1, -1) {}
 
         /**
          * Constructor for events that also carry a position information
          * \param e event type
          * \param p point
          */
-        Event(EventType::E e, Point p) : e(e), k(0), d(false), p(p), raw(-1, -1) {}
+        Event(EventType::E e, Point p) : e(e), k(0), d(false), p(p) {}
 
         /**
          * Constructor for events that also carry a position information
          * \param e event type
          * \param p point
          */
-        Event(EventType::E e, Point p, Point raw, EventDirection::D d)
-            : e(e), k(0), d(d == EventDirection::UP), p(p), raw(raw) {}
+        Event(EventType::E e, Point p, EventDirection::D d)
+            : e(e), k(0), d(d == EventDirection::UP), p(p) {}
 
         /**
          * Constructor for events that also carry a key information
          * \param e even type
          * \param k key data
          */
-        explicit Event(EventType::E e, char k) : e(e), k(k), d(false), p(-1, -1), raw(-1, -1) {}
+        explicit Event(EventType::E e, char k) : e(e), k(k), d(false), p(-1, -1) {}
 
         /**
          * \return the event information
@@ -129,8 +129,6 @@ namespace mxgui
          * \return the point information
          */
         Point getPoint() const { return p; }
-
-        Point getRaw() const { return raw; }
 
         /**
          * \return the event direction, either DOWN or UP
@@ -155,7 +153,6 @@ namespace mxgui
         char k;
         bool d;
         Point p;
-        Point raw;
     };
 
     class InputHandlerImpl; // Forward declaration
