@@ -56,7 +56,7 @@
 #OPT_BOARD := stm32l4r9zi_sensortile
 #OPT_BOARD := stm32f767zi_nucleo
 #OPT_BOARD := stm32f769ni_discovery
-OPT_BOARD := stm32f415vg_st25dvdiscovery
+#OPT_BOARD := stm32f415vg_st25dvdiscovery
 #OPT_BOARD := efm32g222f128_generic
 #OPT_BOARD := stm32l053r8_nucleo
 #OPT_BOARD := stm32f030r8_stm32f0discovery

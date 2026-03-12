@@ -203,7 +203,9 @@ namespace mxgui
          */
         std::function<void()> registerEventCallback(std::function<void()> cb);
 
+#if defined(_BOARD_STM32F415VG_ST25DVDISCOVERY)
         void setTouchscreenCalibration(double xMin, double xMax, double yMin, double yMax);
+#endif
 
     private:
         /**
